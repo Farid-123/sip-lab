@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+
+  kamailio:
+    build: ./kamailio
+    container_name: kamailio
+    restart: always
+    ports:
+      - "443:443/tcp"
+      - "5060:5060/udp"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - FREESWITCH_IP=${FREESWITCH_IP}
+    depends_on:
+      - rtpengine
+    network_mode: host
+
+  rtpengine:
+    image: ghcr.io/sipwise/rtpengine:mr12.5.1
+    container_name: rtpengine
+    restart: always
+    network_mode: host
+    volumes:
+    - ./rtpengine/rtpengine.conf:/etc/rtpengine/rtpengine.conf
+    command: -f /etc/rtpengine/rtpengine.conf
