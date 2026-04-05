@@ -1,4 +1,7 @@
-version: '3.9'
+
+networks:
+  sipnet:
+    driver: bridge
 
 services:
 
@@ -14,13 +17,15 @@ services:
       - FREESWITCH_IP=${FREESWITCH_IP}
     depends_on:
       - rtpengine
-    network_mode: host
+    networks:
+      - sipnet
 
   rtpengine:
-    image: ghcr.io/sipwise/rtpengine:mr12.5.1
+    image: drachtio/rtpengine
     container_name: rtpengine
     restart: always
-    network_mode: host
+    networks:
+      - sipnet
     volumes:
-    - ./rtpengine/rtpengine.conf:/etc/rtpengine/rtpengine.conf
+      - ./rtpengine/rtpengine.conf:/etc/rtpengine/rtpengine.conf
     command: -f /etc/rtpengine/rtpengine.conf

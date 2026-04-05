@@ -1,14 +1,4 @@
 #!/bin/bash
+set -e
 
-DOMAIN=${DOMAIN}
-
-if [ ! -f /etc/letsencrypt/live/$DOMAIN/fullchain.pem ]; then
-certbot certonly \
---standalone \
--d $DOMAIN \
---non-interactive \
---agree-tos \
--m admin@$DOMAIN
-fi
-
-kamailio -DD -E
+kamailio -DD -E -f /etc/kamailio/kamailio.cfg
