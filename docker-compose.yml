@@ -1,12 +1,8 @@
 
-networks:
-  sipnet:
-    driver: bridge
-
 services:
 
   kamailio:
-    build: ./kamailio
+    image: sip-lab-kamailio
     container_name: kamailio
     restart: always
     ports:
@@ -17,15 +13,18 @@ services:
       - FREESWITCH_IP=${FREESWITCH_IP}
     depends_on:
       - rtpengine
-    networks:
-      - sipnet
+    network_mode: host
+    volumes:
+    - ./kamailio/kamailio.cfg:/etc/kamailio/kamailio.cfg
 
   rtpengine:
     image: drachtio/rtpengine
     container_name: rtpengine
     restart: always
-    networks:
-      - sipnet
-    volumes:
-      - ./rtpengine/rtpengine.conf:/etc/rtpengine/rtpengine.conf
-    command: -f /etc/rtpengine/rtpengine.conf
+    network_mode: host
+    command: >
+      rtpengine
+      --interface=192.168.100.6
+      --listen-ng=127.0.0.1:2223
+      --port-min=30000
+      --port-max=40000
